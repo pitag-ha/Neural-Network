@@ -16,23 +16,15 @@ weightedInput ess input
 
 type Layer = [Neuron]
 
--- constructLayer :: StdGen -> Int -> Int -> Layer
--- constructLayer gen number_neurons number_weights = [Essence (tail (next index_neuron)) (head (next index_neuron)) | index_neuron <- [0..(number_neurons-1)]]
---     where next index = take (number_weights+1) (drop (index*(number_weights+1)) (infRandomList gen))
+constructLayer :: Int -> Int -> Int -> Layer
+constructLayer seed number_neurons number_weights = constructLayerRec randList number_neurons number_weights 
+    where randList = infRandomList . mkStdGen $ seed
 
-constructLayer :: [Float] -> Int -> Int -> Layer
-constructLayer' _ 0 _ = []
-constructLayer' rand number_neurons number_weights = (Essence (tail sub_rand) (head sub_rand) ):(constructLayer' rest_rand (number_neurons - 1) number_weights)
+constructLayerRec :: [Float] -> Int -> Int -> Layer
+constructLayerRec _ 0 _ = []
+constructLayerRec rand number_neurons number_weights = (Essence (tail sub_rand) (head sub_rand) ):(constructLayerRec rest_rand (number_neurons - 1) number_weights)
     where (sub_rand, rest_rand) = splitAt (number_weights + 1) rand 
 
-
-
--- randomList :: StdGen -> Int -> [Float]
--- randomList gen i = case i of
---     0 -> []
---     _ -> let 
---         (x, newGen) = randomR (-1 :: Float, 1 :: Float) gen
---         in x:(randomList newGen (i-1))
 
 
 infRandomList :: StdGen -> [Float]
